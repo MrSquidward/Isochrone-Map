@@ -69,7 +69,7 @@ class Graph:
             q_list.remove(current_node)
             s_list.append(current_node)
 
-            for edge in current_node.edges:  # potencjalny błąd -> wyszukiwanie powinno odbywac się w zbioerze Q
+            for edge in current_node.edges:
                 next_node_id = (edge.to_node.x, edge.to_node.y)
                 if d[next_node_id] > d[current_node_id] + edge.cost:
                     d[next_node_id] = d[current_node_id] + edge.cost
@@ -81,6 +81,7 @@ class Graph:
             curr_node_id = p[curr_node_id]
             path.append(curr_node_id)
 
+        print('d:', d[(end.x, end.y)])
         return path
 
     def pathfinding_a_star(self, start, end):
@@ -124,6 +125,7 @@ class Graph:
             curr_node_id = p[curr_node_id]
             path.append(curr_node_id)
 
+        print('a*:', d[(end.x, end.y)])
         return path
 
 
@@ -152,7 +154,7 @@ class Node:
 
 
 # read file with nodes
-f = open('graf40.txt')
+f = open('graph40.txt')
 
 input_edges = []
 for line in f:
@@ -180,7 +182,8 @@ for node in nodes:
 
 main_graph = Graph(edges, nodes)
 main_path = main_graph.pathfinding_a_star(main_graph.nodes[0], main_graph.nodes[-1])
-print(main_path)
-print(len(main_path))
+main_path2 = main_graph.pathfinding_dijkstra(main_graph.nodes[0], main_graph.nodes[-1])
+print('a*:', main_path, len(main_path))
+print('d:', main_path2, len(main_path2))
 
 
