@@ -5,23 +5,12 @@ arcpy.env.overwriteOutput = True
 
 roads_fc = 'L4_1_BDOT10k__OT_SKDR_L.shp'
 
-for row in arcpy.SearchCursor(roads_fc, ["OID@", "SHAPE@"]):
-    # Print the current polygon or polyline's ID
-    print("Feature {}:".format(row.getValue('FID')))
-    partnum = 0
-
-    # Step through each part of the feature
-    for part in row.getValue("SHAPE@"):
-        # Print the part number
-        print("Part {}:".format(partnum))
-
-        # Step through each vertex in the feature
-        for pnt in part:
-            if pnt:
-                # Print x,y coordinates of current point
-                print("{}, {}".format(pnt.X, pnt.Y))
-            else:
-                # If pnt is None, this represents an interior ring
-                print("Interior Ring:")
-
-        partnum += 1
+# for row in arcpy.SearchCursor(roads_fc):
+#     # Print the current polygon or polyline's ID
+#     print("FID {}:".format(row.getValue('FID')))
+#     startpt = row.getValue('SHAPE@XY').firstPoint
+for row in arcpy.da.SearchCursor(roads_fc, ["SHAPE@"]):
+    print(row[0].firstPoint.X)
+    print(row[0].getPart(0)[0].X)
+    #print(row[0].getPart(0)[-1].X)
+    #print "x: ", abs(row[0].getPart(0)[0].X - row[0].getPart(0)[-1].X)
