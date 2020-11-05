@@ -81,6 +81,7 @@ class Graph:
             curr_node_id = p[curr_node_id]
             path.append(curr_node_id)
 
+        print('d:', d[(end.x, end.y)])
         return path
 
     def pathfinding_a_star(self, start, end):
@@ -123,6 +124,7 @@ class Graph:
         while curr_node_id != (start.x, start.y):
             curr_node_id = p[curr_node_id]
             path.append(curr_node_id)
+
         print 'end cost', d[(end.x, end.y)]
         return path
 
@@ -180,7 +182,8 @@ for node in nodes:
 
 main_graph = Graph(edges, nodes)
 main_path = main_graph.pathfinding_a_star(main_graph.nodes[0], main_graph.nodes[-1])
-print(main_path)
-print(len(main_path))
+main_path2 = main_graph.pathfinding_dijkstra(main_graph.nodes[0], main_graph.nodes[-1])
+print('a*:', main_path, len(main_path))
+print('d:', main_path2, len(main_path2))
 
 
