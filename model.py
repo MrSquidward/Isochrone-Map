@@ -23,11 +23,12 @@ class Node:
 
 
 class Edge:
-    def __init__(self, f_node, t_node, c):
+    def __init__(self, f_node, t_node, c, d=0):
         self.from_node_id = f_node
         self.to_node_id = t_node
-        self.edge_id = (f_node, t_node)
+        self.id = (f_node, t_node)
         self.cost = c
+        self.direction = d
 
 
 class Graph:
