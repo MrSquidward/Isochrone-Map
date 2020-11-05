@@ -69,7 +69,7 @@ class Graph:
             q_list.remove(current_node)
             s_list.append(current_node)
 
-            for edge in current_node.edges:  # potencjalny błąd -> wyszukiwanie powinno odbywac się w zbioerze Q
+            for edge in current_node.edges:
                 next_node_id = (edge.to_node.x, edge.to_node.y)
                 if d[next_node_id] > d[current_node_id] + edge.cost:
                     d[next_node_id] = d[current_node_id] + edge.cost
@@ -84,8 +84,8 @@ class Graph:
         return path
 
     def pathfinding_a_star(self, start, end):
-        s_list = []  # processed nodes
-        q_list = []  # not processed nodes
+        s_list = set()  # processed nodes
+        q_list = set()  # not processed nodes
 
         d = {}  # value of a path from the start node to the current node
         for n in self.nodes:
@@ -97,8 +97,8 @@ class Graph:
             p[(n.x, n.y)] = (-1, -1)
 
         current_node = start
-        s_list.append(start)
-        q_list.append(start)
+        s_list.add(start)
+        q_list.add(start)
         current_node_id = (current_node.x, current_node.y)
         while (current_node.x, current_node.y) != (end.x, end.y):
             for edge in current_node.edges:
@@ -108,7 +108,7 @@ class Graph:
                 if next_node not in s_list:
                     if d[next_node_id] > d[current_node_id] + edge.cost + h_value:
                         d[next_node_id] = d[current_node_id] + edge.cost
-                        q_list.append(next_node)
+                        q_list.add(next_node)
                         p[next_node_id] = current_node_id
 
             q_list.remove(current_node)
@@ -116,14 +116,14 @@ class Graph:
             current_node_id = extract_minimum(q_list, d)
             current_node = find_node(q_list, current_node_id[0], current_node_id[1])
 
-            s_list.append(current_node)
+            s_list.add(current_node)
 
         curr_node_id = (end.x, end.y)
         path = [curr_node_id]
         while curr_node_id != (start.x, start.y):
             curr_node_id = p[curr_node_id]
             path.append(curr_node_id)
-
+        print 'end cost', d[(end.x, end.y)]
         return path
 
 
@@ -152,7 +152,7 @@ class Node:
 
 
 # read file with nodes
-f = open('graf40.txt')
+f = open('graph40.txt')
 
 input_edges = []
 for line in f:
