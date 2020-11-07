@@ -30,6 +30,11 @@ class Edge:
         self.cost = c
         self.direction = d
 
+    def get_end(self, one_node_id):
+        if one_node_id == self.from_node_id:
+            return self.to_node_id
+        return self.from_node_id
+
 
 class Graph:
     def __init__(self, e, n):

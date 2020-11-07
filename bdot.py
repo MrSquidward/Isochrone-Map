@@ -35,13 +35,19 @@ for node in nodes:
 
 for edge in edges:
     if edge.id not in nodes_edges[edge.from_node_id]:
-        temp = nodes_edges[edge.from_node_id]
-        temp.append(edge.id)
-        nodes_edges[edge.from_node_id] = temp
+        nodes_edges[edge.from_node_id].append(edge.id)
     if edge.id not in nodes_edges[edge.to_node_id]:
-        temp = nodes_edges[edge.to_node_id]
-        temp.append(edge.id)
-        nodes_edges[edge.to_node_id] = temp
+        nodes_edges[edge.to_node_id].append(edge.id)
+
+# for edge in edges:
+#     if edge.id not in nodes_edges[edge.from_node_id]:
+#         temp = nodes_edges[edge.from_node_id]
+#         temp.append(edge.id)
+#         nodes_edges[edge.from_node_id] = temp
+#     if edge.id not in nodes_edges[edge.to_node_id]:
+#         temp = nodes_edges[edge.to_node_id]
+#         temp.append(edge.id)
+#         nodes_edges[edge.to_node_id] = temp
 
 for i in nodes_edges:
     print i, len(nodes_edges[i]), nodes_edges[i]
