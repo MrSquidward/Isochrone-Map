@@ -94,6 +94,7 @@ class Graph:
         final_list = sorted(self.nodes, key=lambda node: math.sqrt(abs(my_x - node.x) ** 2 + abs(my_y - node.y) ** 2))
         return final_list[0]
 
+
 def extract_minimum(q, d):
     extract = {}
     for id, value in d.items():
@@ -138,10 +139,12 @@ def pathfinding_a_star(graph, start_id, end_id):
         for node in neighbouring_nodes:
             next_node = graph.get_node_by_id(node)
             h_value = next_node.heuristic_cost(graph.get_node_by_id(end_id).x, graph.get_node_by_id(end_id).y)
+
             try:
                 edge_cost = graph.get_edge_by_id((current_node.id, next_node.id)).get_cost()
-            except:
+            except KeyError:
                 edge_cost = graph.get_edge_by_id((next_node.id, current_node.id)).get_cost()
+            
             tentative_g_score = g_score[current_node.id] + edge_cost
             if tentative_g_score < g_score[next_node.id]:
                 p[next_node.id] = current_node.id

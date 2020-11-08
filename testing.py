@@ -1,7 +1,7 @@
 import arcpy
 from model import *
 
-arcpy.env.workspace = r'D:\pycharm\pag_algorythm\BDOT_Torun'
+arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG\BDOT'
 arcpy.env.overwriteOutput = True
 
 roads_fc = 'L4_1_BDOT10k__OT_SKJZ_L.shp'
@@ -28,4 +28,5 @@ torun_skjz = Graph(edges, nodes)
 start_point = torun_skjz.get_closest_node(474015.240, 572269.582)
 end_point = torun_skjz.get_closest_node(474076.359, 572436.534)
 my_path = pathfinding_a_star(torun_skjz, start_point.id, end_point.id)
+
 print my_path
