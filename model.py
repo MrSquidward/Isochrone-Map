@@ -50,13 +50,13 @@ class Graph:
 
         self.__add_node_edges()
 
-        self.dict_of_nodes_by_id = {}
-        for node in self.nodes:
-            self.dict_of_nodes_by_id[node.id] = node
-
         self.dict_of_edges_by_id = {}
         for edge in self.edges:
             self.dict_of_edges_by_id[edge.id] = edge
+
+        self.dict_of_nodes_by_id = {}
+        for node in self.nodes:
+            self.dict_of_nodes_by_id[node.id] = node
 
     def __add_node_edges(self):
         nodes_edges = {}
