@@ -19,7 +19,7 @@ class Node:
         if manhattan:
             return x_diff + y_diff
 
-        return math.sqrt(x_diff ** 2 + y_diff ** 2)
+        return math.sqrt(x_diff * x_diff + y_diff * y_diff)
 
 
 class Edge:
