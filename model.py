@@ -1,6 +1,8 @@
 import math
 import sys
 
+import heapq
+
 
 class Node:
     def __init__(self, x, y, e=None):
@@ -23,13 +25,13 @@ class Node:
 
 
 class Edge:
-    def __init__(self, f_node, t_node, c, FID, d=0):
+    def __init__(self, f_node, t_node, c, fid, d=0):
         self.from_node_id = f_node
         self.to_node_id = t_node
         self.id = (f_node, t_node)
         self.cost = c
         self.direction = d
-        self.fid = FID
+        self.fid = fid
 
     def get_end(self, one_node_id):
         if one_node_id == self.from_node_id:
@@ -90,22 +92,14 @@ class Graph:
 
         return return_list
 
-    def get_closest_node(self, my_x, my_y):
-        final_list = sorted(self.nodes, key=lambda node: math.sqrt(abs(my_x - node.x) ** 2 + abs(my_y - node.y) ** 2))
-        return final_list[0]
+    def get_closest_node(self, pt_x, pt_y):
+        distance_list = [(math.sqrt((pt_x - n.x) * (pt_x - n.x) + (pt_y - n.y) * (pt_y - n.y)), n) for n in self.nodes]
 
-
-def extract_minimum(q, d):
-    extract = {}
-    for id, value in d.items():
-        if id in q:
-            extract[id] = value
-
-    return min(extract, key=d.get)
+        return min(distance_list)[1]
 
 
 def pathfinding_a_star(graph, start_id, end_id):
-    q_list = set()  # not processed neighbours of previous nodes
+    q_list = []  # not processed neighbours of previous nodes
     neighbours_map = {}  # map of not processed neighbours - used for quicker access to data
 
     f_score = {}  # value of a path from the start node to the current node with heuristics
@@ -120,21 +114,18 @@ def pathfinding_a_star(graph, start_id, end_id):
     g_score[start_id] = 0
     current_node = graph.get_node_by_id(start_id)
     f_score[start_id] = current_node.heuristic_cost(graph.get_node_by_id(end_id).x, graph.get_node_by_id(end_id).y)
-    q_list.add(start_id)
+    heapq.heappush(q_list, [f_score[start_id], start_id])  # create heapq from q_list
     neighbours_map[start_id] = True
 
     while len(q_list) != 0:
-        current_node_id = extract_minimum(q_list, f_score)  # get id of a node from q_list with the lowest path value
+        current_node_id = heapq.heappop(q_list)[1]  # get id of a node from q_list with the lowest path value
         current_node = graph.get_node_by_id(current_node_id)
 
         if current_node_id == end_id:
             break
 
-        q_list.remove(current_node.id)
         neighbours_map[current_node.id] = False
-        neighbouring_nodes = []
-        for el in graph.get_neighbours(current_node.id):
-            neighbouring_nodes.append(el[0])
+        neighbouring_nodes = [el[0] for el in graph.get_neighbours(current_node_id)]
 
         for node in neighbouring_nodes:
             next_node = graph.get_node_by_id(node)
@@ -152,7 +143,7 @@ def pathfinding_a_star(graph, start_id, end_id):
                 f_score[next_node.id] = g_score[next_node.id] + h_value
 
                 if not neighbours_map[next_node.id]:
-                    q_list.add(next_node.id)
+                    heapq.heappush(q_list, [f_score[next_node.id], next_node.id])
                     neighbours_map[next_node.id] = True
 
     # reconstruct the path form end to start node

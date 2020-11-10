@@ -30,3 +30,5 @@ end_point = torun_skjz.get_closest_node(474076.359, 572436.534)
 my_path = pathfinding_a_star(torun_skjz, start_point.id, end_point.id)
 
 print my_path
+print start_point.x, start_point.y
+print end_point.x, end_point.y
