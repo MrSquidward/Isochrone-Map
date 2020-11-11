@@ -24,11 +24,14 @@ for i in d:
     nodes.append(d[i])
 
 torun_skjz = Graph(edges, nodes)
-start_point = torun_skjz.get_closest_node(474015.240, 572269.582)
-end_point = torun_skjz.get_closest_node(474076.359, 572436.534)
+# start_point = torun_skjz.get_closest_node(474015.240, 572269.582)
+# end_point = torun_skjz.get_closest_node(474076.359, 572436.534)
+start_point = torun_skjz.get_closest_node(476655, 572905)
+end_point = torun_skjz.get_closest_node(473198, 571457)
+
 # start_point = torun_skjz.get_closest_node(472298, 573122)
 # end_point = torun_skjz.get_closest_node(472421, 573194)
-my_path = pathfinding_a_star(torun_skjz, start_point, end_point, False)
+my_path = pathfinding_a_star(torun_skjz, start_point, end_point, True)
 
 print my_path
 print start_point
