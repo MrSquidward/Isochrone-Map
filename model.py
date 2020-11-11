@@ -3,7 +3,17 @@ import sys
 
 import heapq
 
-SPEED_ARRAY = {'G' : 50 * 1000 / 60 * 0.9, 'Z' : 50 * 1000 / 60 * 1.1, 'L' : 45 * 1000 / 60, 'D' : 40, 'I' : 50 * 1000 / 60, 'GP' : 70 * 1000 / 60, 'S' : 120 * 1000 / 60 * 1.1, 'A' : 140 * 1000 / 60 * 1.1}
+
+SPEED_ARRAY = {
+    'G':  60 * 1000 / 60,
+    'Z':  50 * 1000 / 60,
+    'L':  45 * 1000 / 60,
+    'D':  50 * 1000 / 60,
+    'I':  50 * 1000 / 60,
+    'GP': 70 * 1000 / 60,
+    'S': 120 * 1000 / 60,
+    'A': 140 * 1000 / 60
+}
 
 
 class Node:
@@ -27,7 +37,7 @@ class Node:
 
 
 class Edge:
-    def __init__(self, f_node, t_node, c, fid, road_cl = 'G', d=0):
+    def __init__(self, f_node, t_node, c, fid, road_cl='G', d=0):
         self.from_node_id = f_node
         self.to_node_id = t_node
         self.id = (f_node, t_node)
@@ -35,7 +45,7 @@ class Edge:
         self.direction = d
         self.FID = fid
         self.speed = SPEED_ARRAY[road_cl]
-        self.time = c / SPEED_ARRAY[road_cl]
+        self.time = self.length / self.speed
 
     def get_end(self, one_node_id):
         if one_node_id == self.from_node_id:
@@ -116,7 +126,7 @@ class Graph:
         return id_of_min_dist
 
 
-def pathfinding_a_star(graph, start_id, end_id, the_shortest = True):
+def pathfinding_a_star(graph, start_id, end_id, the_shortest=True):
     q_list = []  # not processed neighbours of previous nodes
     neighbours_map = {}  # map of not processed neighbours - used for quicker access to data
 
@@ -159,6 +169,7 @@ def pathfinding_a_star(graph, start_id, end_id, the_shortest = True):
                     edge_cost = graph.get_edge_by_id((next_node.id, current_node.id)).get_length()
                 else:
                     edge_cost = graph.get_edge_by_id((next_node.id, current_node.id)).get_time()
+
             tentative_g_score = g_score[current_node.id] + edge_cost
             if tentative_g_score < g_score[next_node.id]:
                 p[next_node.id] = current_node.id
@@ -178,6 +189,6 @@ def pathfinding_a_star(graph, start_id, end_id, the_shortest = True):
         e_fid = graph.get_fid_from_nodes_id(curr_node_id, prev_node_id)
         path.append(e_fid)
 
-    print g_score[end_id]  # get the value of the shortest path
+    print g_score[end_id]  # get the value of the shortest/quickest path
 
     return path

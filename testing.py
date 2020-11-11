@@ -1,7 +1,7 @@
 import arcpy
 from model import *
 
-arcpy.env.workspace = r'D:\pycharm\pag_arcpy\bdot_skjz'
+arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG\BDOT'
 arcpy.env.overwriteOutput = True
 
 roads_fc = 'L4_1_BDOT10k__OT_SKJZ_L.shp'
@@ -24,15 +24,14 @@ for i in d:
     nodes.append(d[i])
 
 torun_skjz = Graph(edges, nodes)
-# start_point = torun_skjz.get_closest_node(474015.240, 572269.582)
-# end_point = torun_skjz.get_closest_node(474076.359, 572436.534)
-start_point = torun_skjz.get_closest_node(476655, 572905)
-end_point = torun_skjz.get_closest_node(473198, 571457)
 
-# start_point = torun_skjz.get_closest_node(472298, 573122)
-# end_point = torun_skjz.get_closest_node(472421, 573194)
-my_path = pathfinding_a_star(torun_skjz, start_point, end_point, True)
+start_point = torun_skjz.get_closest_node(464127.769, 572331.859)
+end_point = torun_skjz.get_closest_node(477311.896, 575979.374)
 
-print my_path
 print start_point
 print end_point
+
+my_path = pathfinding_a_star(torun_skjz, start_point, end_point, False)
+
+print my_path
+
