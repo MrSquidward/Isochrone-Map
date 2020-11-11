@@ -3,6 +3,8 @@ import sys
 
 import heapq
 
+SPEED_ARRAY = {'G' : 50 * 1000 / 60 * 0.9, 'Z' : 50 * 1000 / 60 * 1.1, 'L' : 45 * 1000 / 60, 'D' : 40, 'I' : 50 * 1000 / 60, 'GP' : 70 * 1000 / 60, 'S' : 120 * 1000 / 60 * 1.1, 'A' : 140 * 1000 / 60 * 1.1}
+
 
 class Node:
     def __init__(self, x, y, e=None):
@@ -25,24 +27,26 @@ class Node:
 
 
 class Edge:
-    def __init__(self, f_node, t_node, c, fid, d=0):
+    def __init__(self, f_node, t_node, c, fid, road_cl = 'G', d=0):
         self.from_node_id = f_node
         self.to_node_id = t_node
         self.id = (f_node, t_node)
-        self.cost = c
+        self.length = c
         self.direction = d
-        self.fid = fid
+        self.FID = fid
+        self.speed = SPEED_ARRAY[road_cl]
+        self.time = c / SPEED_ARRAY[road_cl]
 
     def get_end(self, one_node_id):
         if one_node_id == self.from_node_id:
             return self.to_node_id
         return self.from_node_id
 
-    def get_cost(self):
-        return self.cost
-
-    # def get_time_cost(self):
-    #     return self.cost /
+    def get_length(self):
+        return self.length
+    
+    def get_time(self):
+        return self.time
 
 
 class Graph:
@@ -66,9 +70,9 @@ class Graph:
             nodes_edges[node.id] = []
 
         for edge in self.edges:
-            if edge.id not in nodes_edges[edge.from_node_id]:
+            if edge.id not in nodes_edges[edge.from_node_id] and edge.direction < 2:
                 nodes_edges[edge.from_node_id].append(edge.id)
-            if edge.id not in nodes_edges[edge.to_node_id]:
+            if edge.id not in nodes_edges[edge.to_node_id] and edge.direction in (0, 2):
                 nodes_edges[edge.to_node_id].append(edge.id)
 
         for node in self.nodes:
@@ -79,6 +83,15 @@ class Graph:
 
     def get_edge_by_id(self, edge_id):
         return self.dict_of_edges_by_id[edge_id]
+
+    def get_fid_from_edge_id(self, edge_id):
+        return self.dict_of_edges_by_id[edge_id].FID
+
+    def get_fid_from_nodes_id(self, f_node, l_node):
+        try:
+            return self.dict_of_edges_by_id[(f_node, l_node)].FID
+        except KeyError:
+            return self.dict_of_edges_by_id[(l_node, f_node)].FID
 
     def get_neighbours(self, node_id):
         neighbour_edges = self.dict_of_nodes_by_id[node_id].edges
@@ -93,12 +106,17 @@ class Graph:
         return return_list
 
     def get_closest_node(self, pt_x, pt_y):
-        distance_list = [(math.sqrt((pt_x - n.x) * (pt_x - n.x) + (pt_y - n.y) * (pt_y - n.y)), n) for n in self.nodes]
+        min_dist = sys.maxsize
+        id_of_min_dist = (-1, -1)
+        for n in self.nodes:
+            if math.sqrt((pt_x - n.x) * (pt_x - n.x) + (pt_y - n.y) * (pt_y - n.y)) < min_dist:
+                min_dist = math.sqrt((pt_x - n.x) * (pt_x - n.x) + (pt_y - n.y) * (pt_y - n.y))
+                id_of_min_dist = n.id
 
-        return min(distance_list)[1]
+        return id_of_min_dist
 
 
-def pathfinding_a_star(graph, start_id, end_id):
+def pathfinding_a_star(graph, start_id, end_id, the_shortest = True):
     q_list = []  # not processed neighbours of previous nodes
     neighbours_map = {}  # map of not processed neighbours - used for quicker access to data
 
@@ -132,10 +150,15 @@ def pathfinding_a_star(graph, start_id, end_id):
             h_value = next_node.heuristic_cost(graph.get_node_by_id(end_id).x, graph.get_node_by_id(end_id).y)
 
             try:
-                edge_cost = graph.get_edge_by_id((current_node.id, next_node.id)).get_cost()
+                if the_shortest:
+                    edge_cost = graph.get_edge_by_id((current_node.id, next_node.id)).get_length()
+                else:
+                    edge_cost = graph.get_edge_by_id((current_node.id, next_node.id)).get_time()
             except KeyError:
-                edge_cost = graph.get_edge_by_id((next_node.id, current_node.id)).get_cost()
-            
+                if the_shortest:
+                    edge_cost = graph.get_edge_by_id((next_node.id, current_node.id)).get_length()
+                else:
+                    edge_cost = graph.get_edge_by_id((next_node.id, current_node.id)).get_time()
             tentative_g_score = g_score[current_node.id] + edge_cost
             if tentative_g_score < g_score[next_node.id]:
                 p[next_node.id] = current_node.id
@@ -148,10 +171,12 @@ def pathfinding_a_star(graph, start_id, end_id):
 
     # reconstruct the path form end to start node
     curr_node_id = end_id
-    path = [curr_node_id]
+    path = []
     while curr_node_id != start_id:
+        prev_node_id = curr_node_id
         curr_node_id = p[curr_node_id]
-        path.append(curr_node_id)
+        e_fid = graph.get_fid_from_nodes_id(curr_node_id, prev_node_id)
+        path.append(e_fid)
 
     print g_score[end_id]  # get the value of the shortest path
 
