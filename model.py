@@ -1,7 +1,5 @@
 import math
-import sys
-
-import heapq
+from sys import maxsize
 
 
 SPEED_ARRAY = {
@@ -116,7 +114,7 @@ class Graph:
         return return_list
 
     def get_closest_node(self, pt_x, pt_y):
-        min_dist = sys.maxsize
+        min_dist = maxsize
         id_of_min_dist = (-1, -1)
         for n in self.nodes:
             if math.sqrt((pt_x - n.x) * (pt_x - n.x) + (pt_y - n.y) * (pt_y - n.y)) < min_dist:
@@ -126,69 +124,5 @@ class Graph:
         return id_of_min_dist
 
 
-def pathfinding_a_star(graph, start_id, end_id, the_shortest=True):
-    q_list = []  # not processed neighbours of previous nodes
-    neighbours_map = {}  # map of not processed neighbours - used for quicker access to data
 
-    f_score = {}  # value of a path from the start node to the current node with heuristics
-    g_score = {}  # value of a path from the start node to the current node without heuristics
-    p = {}  # previous node in a path
-    for node in graph.nodes:
-        f_score[node.id] = sys.maxsize
-        g_score[node.id] = sys.maxsize
-        p[node.id] = (-1, -1)
-        neighbours_map[node.id] = False
 
-    g_score[start_id] = 0
-    current_node = graph.get_node_by_id(start_id)
-    f_score[start_id] = current_node.heuristic_cost(graph.get_node_by_id(end_id).x, graph.get_node_by_id(end_id).y)
-    heapq.heappush(q_list, [f_score[start_id], start_id])  # create heapq from q_list
-    neighbours_map[start_id] = True
-
-    while len(q_list) != 0:
-        current_node_id = heapq.heappop(q_list)[1]  # get id of a node from q_list with the lowest path value
-        current_node = graph.get_node_by_id(current_node_id)
-
-        if current_node_id == end_id:
-            break
-
-        neighbours_map[current_node.id] = False
-        neighbouring_nodes = [el[0] for el in graph.get_neighbours(current_node_id)]
-
-        for node in neighbouring_nodes:
-            next_node = graph.get_node_by_id(node)
-            h_value = next_node.heuristic_cost(graph.get_node_by_id(end_id).x, graph.get_node_by_id(end_id).y)
-
-            try:
-                if the_shortest:
-                    edge_cost = graph.get_edge_by_id((current_node.id, next_node.id)).get_length()
-                else:
-                    edge_cost = graph.get_edge_by_id((current_node.id, next_node.id)).get_time()
-            except KeyError:
-                if the_shortest:
-                    edge_cost = graph.get_edge_by_id((next_node.id, current_node.id)).get_length()
-                else:
-                    edge_cost = graph.get_edge_by_id((next_node.id, current_node.id)).get_time()
-
-            tentative_g_score = g_score[current_node.id] + edge_cost
-            if tentative_g_score < g_score[next_node.id]:
-                p[next_node.id] = current_node.id
-                g_score[next_node.id] = tentative_g_score
-                f_score[next_node.id] = g_score[next_node.id] + h_value
-
-                if not neighbours_map[next_node.id]:
-                    heapq.heappush(q_list, [f_score[next_node.id], next_node.id])
-                    neighbours_map[next_node.id] = True
-
-    # reconstruct the path form end to start node
-    curr_node_id = end_id
-    path = []
-    while curr_node_id != start_id:
-        prev_node_id = curr_node_id
-        curr_node_id = p[curr_node_id]
-        e_fid = graph.get_fid_from_nodes_id(curr_node_id, prev_node_id)
-        path.append(e_fid)
-
-    print g_score[end_id]  # get the value of the shortest/quickest path
-
-    return path
