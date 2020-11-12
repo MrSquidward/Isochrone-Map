@@ -1,6 +1,8 @@
 import arcpy
 import heapq
 from sys import maxsize
+from model import AVERAGE_SPEED
+
 
 def visualize_path(fid_path, input_shp, output_shp):
     fid_str = ''
@@ -8,13 +10,12 @@ def visualize_path(fid_path, input_shp, output_shp):
         fid_str = fid_str + str(fid) + ', '
     fid_str = fid_str[:-2]
 
-    arcpy.MakeFeatureLayer_management(input_shp, 'skjz.lyr')
+    arcpy.MakeFeatureLayer_management(input_shp, 'temp.lyr')
 
-    arcpy.SelectLayerByAttribute_management('skjz.lyr',
-                                            'NEW_SELECTION',
-                                            '"FID" in ({})'.format(fid_str))
+    arcpy.SelectLayerByAttribute_management('temp.lyr', 'NEW_SELECTION', '"FID" in ({})'.format(fid_str))
 
-    arcpy.CopyFeatures_management('skjz.lyr', output_shp)
+    arcpy.CopyFeatures_management('temp.lyr', output_shp)
+    arcpy.Delete_management('temp.lyr')
 
 
 def pathfinding_a_star(graph, start_id, end_id, the_shortest=True):
@@ -51,7 +52,8 @@ def pathfinding_a_star(graph, start_id, end_id, the_shortest=True):
             if the_shortest:
                 h_value = next_node.heuristic_cost(graph.get_node_by_id(end_id).x, graph.get_node_by_id(end_id).y)
             else:
-                h_value = next_node.heuristic_cost(graph.get_node_by_id(end_id).x, graph.get_node_by_id(end_id).y) / (70 * 1000 / 60)
+                h_value = next_node.heuristic_cost(graph.get_node_by_id(end_id).x, graph.get_node_by_id(end_id).y)
+                h_value /= AVERAGE_SPEED  # corrects heuristics for quickest path variant
 
             try:
                 if the_shortest:

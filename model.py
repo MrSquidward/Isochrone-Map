@@ -13,6 +13,8 @@ SPEED_ARRAY = {
     'A': 140 * 1000 / 60
 }
 
+AVERAGE_SPEED = 70 * 1000 / 60
+
 
 class Node:
     def __init__(self, x, y, e=None):
@@ -122,7 +124,3 @@ class Graph:
                 id_of_min_dist = n.id
 
         return id_of_min_dist
-
-
-
-
