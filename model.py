@@ -13,7 +13,7 @@ SPEED_ARRAY = {
     'A': 140 * 1000 / 60
 }
 
-AVERAGE_SPEED = 70 * 1000 / 60
+AVERAGE_SPEED = 80 * 1000 / 60
 
 
 class Node:
