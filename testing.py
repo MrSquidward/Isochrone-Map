@@ -1,16 +1,13 @@
 from utils import *
 from model import *
 
-#arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG\BDOT'
+# arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG\BDOT'
 arcpy.env.workspace = r'D:\pycharm\pag_arcpy\bdot_skjz'
 arcpy.env.overwriteOutput = True
 
 roads_fc = arcpy.GetParameterAsText(0)
 points_fc = arcpy.GetParameterAsText(1)
-points = {}
-
 output_file = arcpy.GetParameterAsText(2)
-
 
 edges = []  # list of edges
 nodes_dict = {}  # dict of nodes
@@ -30,6 +27,7 @@ nodes = [nodes_dict[n_id] for n_id in nodes_dict]  # list of nodes
 
 torun_skjz = Graph(edges, nodes)
 
+points = {}
 for row in arcpy.da.SearchCursor(points_fc, ["SHAPE@XY", "FID"]):
     points[row[1]] = row[0]
 
