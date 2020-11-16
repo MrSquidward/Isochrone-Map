@@ -119,8 +119,9 @@ class Graph:
         min_dist = maxsize
         id_of_min_dist = (-1, -1)
         for n in self.nodes:
-            if math.sqrt((pt_x - n.x) * (pt_x - n.x) + (pt_y - n.y) * (pt_y - n.y)) < min_dist:
-                min_dist = math.sqrt((pt_x - n.x) * (pt_x - n.x) + (pt_y - n.y) * (pt_y - n.y))
+            distance = math.sqrt((pt_x - n.x) * (pt_x - n.x) + (pt_y - n.y) * (pt_y - n.y))
+            if  distance < min_dist:
+                min_dist = distance
                 id_of_min_dist = n.id
 
         return id_of_min_dist
