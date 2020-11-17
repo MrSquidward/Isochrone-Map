@@ -1,17 +1,18 @@
 from utils import *
 from model import *
 
-arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG\BDOT'
-# arcpy.env.workspace = r'D:\pycharm\pag_arcpy\bdot_skjz'
+# arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG\BDOT'
+arcpy.env.workspace = r'D:\pycharm\pag_arcpy\bdot_skjz'
 arcpy.env.overwriteOutput = True
 
 # roads_fc = arcpy.GetParameterAsText(0)
 # points_fc = arcpy.GetParameterAsText(1)
 # output_file = arcpy.GetParameterAsText(2)
 
-roads_fc = 'L4_1_BDOT10k__OT_SKJZ_L.shp'
-points_fc = 'points.shp'
-output_file = 'path.shp'
+roads_fc = r'input\L4_1_BDOT10k__OT_SKJZ_L.shp'
+points_fc = r'input\input_points.shp'
+output_file = r'output\path.shp'
+
 
 edges = []  # list of edges
 nodes_dict = {}  # dict of nodes

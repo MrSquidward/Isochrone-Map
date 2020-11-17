@@ -13,7 +13,7 @@ SPEED_ARRAY = {
     'A': 140 * 1000 / 60
 }
 
-AVERAGE_SPEED = 80 * 1000 / 60
+MAXIMUM_SPEED = 140 * 1000 / 60
 
 
 class Node:
@@ -40,10 +40,9 @@ class Edge:
     def __init__(self, f_node, t_node, c, fid, road_cl='G', d=0):
         self.from_node_id = f_node
         self.to_node_id = t_node
-        self.id = (f_node, t_node)
+        self.id = fid
         self.length = c
         self.direction = d
-        self.FID = fid
         self.speed = SPEED_ARRAY[road_cl]
         self.time = self.length / self.speed
 
@@ -93,15 +92,6 @@ class Graph:
 
     def get_edge_by_id(self, edge_id):
         return self.dict_of_edges_by_id[edge_id]
-
-    def get_fid_from_edge_id(self, edge_id):
-        return self.dict_of_edges_by_id[edge_id].FID
-
-    def get_fid_from_nodes_id(self, f_node, l_node):
-        try:
-            return self.dict_of_edges_by_id[(f_node, l_node)].FID
-        except KeyError:
-            return self.dict_of_edges_by_id[(l_node, f_node)].FID
 
     def get_neighbours(self, node_id):
         neighbour_edges = self.dict_of_nodes_by_id[node_id].edges

@@ -1,7 +1,7 @@
 import arcpy
 import heapq
 from sys import maxsize
-from model import AVERAGE_SPEED
+from model import MAXIMUM_SPEED
 
 
 def visualize_path(fid_path, input_shp, output_shp):
@@ -28,7 +28,7 @@ def pathfinding_a_star(graph, start_id, end_id, the_shortest=True):
     for node in graph.nodes:
         f_score[node.id] = maxsize
         g_score[node.id] = maxsize
-        p[node.id] = (-1, -1)
+        p[node.id] = -1
         neighbours_map[node.id] = False
 
     g_score[start_id] = 0
@@ -45,30 +45,30 @@ def pathfinding_a_star(graph, start_id, end_id, the_shortest=True):
             break
 
         neighbours_map[current_node.id] = False
-        neighbouring_nodes = [el[0] for el in graph.get_neighbours(current_node_id)]
+        neighbouring_edges = [el[1] for el in graph.get_neighbours(current_node_id)]
 
-        for node in neighbouring_nodes:
-            next_node = graph.get_node_by_id(node)
+        for edge_id in neighbouring_edges:
+            edge = graph.get_edge_by_id(edge_id)
+
+            next_node_id = graph.get_edge_by_id(edge_id).from_node_id
+            if next_node_id == current_node_id:
+                next_node_id = graph.get_edge_by_id(edge_id).to_node_id
+
+            next_node = graph.get_node_by_id(next_node_id)
             if the_shortest:
                 h_value = next_node.heuristic_cost(graph.get_node_by_id(end_id).x, graph.get_node_by_id(end_id).y)
             else:
                 h_value = next_node.heuristic_cost(graph.get_node_by_id(end_id).x, graph.get_node_by_id(end_id).y)
-                h_value /= AVERAGE_SPEED  # corrects heuristics for quickest path variant
+                h_value /= MAXIMUM_SPEED  # corrects heuristics for quickest path variant
 
-            try:
-                if the_shortest:
-                    edge_cost = graph.get_edge_by_id((current_node.id, next_node.id)).get_length()
-                else:
-                    edge_cost = graph.get_edge_by_id((current_node.id, next_node.id)).get_time()
-            except KeyError:
-                if the_shortest:
-                    edge_cost = graph.get_edge_by_id((next_node.id, current_node.id)).get_length()
-                else:
-                    edge_cost = graph.get_edge_by_id((next_node.id, current_node.id)).get_time()
+            if the_shortest:
+                edge_cost = edge.get_length()
+            else:
+                edge_cost = edge.get_time()
 
             tentative_g_score = g_score[current_node.id] + edge_cost
             if tentative_g_score < g_score[next_node.id]:
-                p[next_node.id] = current_node.id
+                p[next_node.id] = edge_id
                 g_score[next_node.id] = tentative_g_score
                 f_score[next_node.id] = g_score[next_node.id] + h_value
 
@@ -80,10 +80,15 @@ def pathfinding_a_star(graph, start_id, end_id, the_shortest=True):
     curr_node_id = end_id
     path = []
     while curr_node_id != start_id:
+        curr_edge_id = p[curr_node_id]
+        edge = graph.get_edge_by_id(curr_edge_id)
         prev_node_id = curr_node_id
-        curr_node_id = p[curr_node_id]
-        e_fid = graph.get_fid_from_nodes_id(curr_node_id, prev_node_id)
-        path.append(e_fid)
+
+        curr_node_id = edge.to_node_id
+        if prev_node_id == curr_node_id:
+            curr_node_id = edge.from_node_id
+
+        path.append(edge.id)
 
     print g_score[end_id]  # get the value of the shortest/quickest path
 
