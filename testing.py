@@ -1,17 +1,19 @@
 from utils import *
 from model import *
 
-# arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG\BDOT'
-arcpy.env.workspace = r'D:\pycharm\pag_arcpy\bdot_skjz'
+arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG'
+# arcpy.env.workspace = r'D:\pycharm\pag_arcpy\bdot_skjz'
 arcpy.env.overwriteOutput = True
 
 # roads_fc = arcpy.GetParameterAsText(0)
 # points_fc = arcpy.GetParameterAsText(1)
 # output_file = arcpy.GetParameterAsText(2)
+# shortest = arcpy.GetParameterAsText(3)
 
 roads_fc = r'input\L4_1_BDOT10k__OT_SKJZ_L.shp'
 points_fc = r'input\input_points.shp'
 output_file = r'output\path.shp'
+shortest = True
 
 
 edges = []  # list of edges
@@ -39,7 +41,14 @@ for row in arcpy.da.SearchCursor(points_fc, ["SHAPE@XY", "FID"]):
 start_point = torun_skjz.get_closest_node(points[0][0], points[0][1])
 end_point = torun_skjz.get_closest_node(points[1][0], points[1][1])
 
-my_path = pathfinding_a_star(torun_skjz, start_point, end_point, False)
+if shortest:
+    heur_fun = f_heuristic_shortest()
+    edge_cost_fun = f_edge_cost_shortest()
+else:
+    heur_fun = f_heuristic_quickest()
+    edge_cost_fun = f_edge_cost_quickest()
+
+my_path = pathfinding_a_star(torun_skjz, start_point, end_point, edge_cost_fun, heur_fun)
 
 print my_path
 

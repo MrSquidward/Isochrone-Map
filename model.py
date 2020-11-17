@@ -26,15 +26,6 @@ class Node:
         self.id = (int(x), int(y))
         self.edges = e
 
-    def heuristic_cost(self, hx, hy, manhattan=False):
-        x_diff = abs(self.x - hx)
-        y_diff = abs(self.y - hy)
-
-        if manhattan:
-            return x_diff + y_diff
-
-        return math.sqrt(x_diff * x_diff + y_diff * y_diff)
-
 
 class Edge:
     def __init__(self, f_node, t_node, c, fid, road_cl='G', d=0):
