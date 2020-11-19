@@ -21,6 +21,10 @@ def f_heuristic_shortest():
     return lambda curr, end: sqrt((curr.x - end.x) * (curr.x - end.x) + (curr.y - end.y) * (curr.y - end.y))
 
 
+def f_heuristic_zero():
+    return lambda curr, end: 0
+
+
 def visualize_path(fid_path, input_shp, output_shp):
     fid_str = ''
     for fid in fid_path:
@@ -105,3 +109,72 @@ def pathfinding_a_star(graph, start_id, end_id, edge_cost_function, heuristics_f
     print g_score[end_id]  # get the value of the shortest/quickest path
 
     return path
+
+
+def range_algorithm(graph, start_id, edge_cost_function, end_time):
+    q_list = []  # not processed neighbours of previous nodes
+    neighbours_map = {}  # map of not processed neighbours - used for quicker access to data
+
+    g_score = {}  # value of a path from the start node to the current node without heuristics
+    p = {}  # previous node in a path
+    for node in graph.nodes:
+        g_score[node.id] = maxsize
+        p[node.id] = -1
+        neighbours_map[node.id] = False
+
+    g_score[start_id] = 0
+
+    heapq.heappush(q_list, [g_score[start_id], start_id])  # create heapq from q_list
+    neighbours_map[start_id] = True
+
+    while len(q_list) != 0:
+        current_node_id = heapq.heappop(q_list)[1]  # get id of a node from q_list with the lowest path value
+
+        while not neighbours_map[current_node_id] and g_score[current_node_id] < 2 * end_time:  # check if node was already visited
+            current_node_id = heapq.heappop(q_list)[1]
+
+        current_node = graph.get_node_by_id(current_node_id)
+
+        neighbours_map[current_node.id] = False
+        neighbouring_edges = [el[1] for el in graph.get_neighbours(current_node_id)]
+
+        for edge_id in neighbouring_edges:
+            edge = graph.get_edge_by_id(edge_id)
+
+            next_node_id = edge.get_end(current_node_id)
+            next_node = graph.get_node_by_id(next_node_id)
+
+            edge_cost = edge_cost_function(edge)
+
+            tentative_g_score = g_score[current_node.id] + edge_cost
+            if tentative_g_score < g_score[next_node.id]:
+                p[next_node.id] = edge_id
+                g_score[next_node.id] = tentative_g_score
+
+                heapq.heappush(q_list, [g_score[next_node.id], next_node.id])
+                neighbours_map[next_node.id] = True
+    new_score = {}
+    for p in g_score:
+        if g_score[p] < end_time:
+            new_score[p] = g_score[p]
+    return new_score
+
+
+def visualize_range(output_shp, g_sco):
+    points = []
+
+    cursor = arcpy.InsertCursor(output_shp, ['Id', 'SHAPE'])
+    for point in g_sco:
+        points.append(point)
+        print point
+
+    for point in points:
+        row = cursor.newRow()
+        row.setValue('Id', points.index(point))
+        row.setValue('SHAPE', arcpy.Point(point[0], point[1]))
+        # myp = arcpy.Point(point[0], point[1])
+        # row.setValue('SHAPE@', myp)
+        cursor.insertRow(row)
+
+    del cursor
+    del row
