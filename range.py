@@ -1,8 +1,8 @@
 from utils import *
 from model import *
 
-#arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG'
-arcpy.env.workspace = r'D:\pycharm\pag_arcpy'
+arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG'
+# arcpy.env.workspace = r'D:\pycharm\pag_arcpy'
 arcpy.env.overwriteOutput = True
 
 # roads_fc = arcpy.GetParameterAsText(0)
@@ -44,28 +44,3 @@ edge_cost_fun = f_edge_cost_quickest()
 my_range = range_algorithm(torun_skjz, start_point, edge_cost_fun, requested_time)
 print my_range
 visualize_range(r"output\new.shp", my_range)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

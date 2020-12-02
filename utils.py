@@ -163,15 +163,15 @@ def range_algorithm(graph, start_id, edge_cost_function, end_time):
 def visualize_range(output_shp, g_sco):
     points = []
 
-    cursor = arcpy.InsertCursor(output_shp, ['Id', 'SHAPE'])
+    cursor = arcpy.InsertCursor(output_shp, ['Id', 'SHAPE', 'Distance'])
     for point in g_sco:
         points.append(point)
-        print point
 
     for point in points:
         row = cursor.newRow()
         row.setValue('Id', points.index(point))
         row.setValue('SHAPE', arcpy.Point(point[0], point[1]))
+        row.setValue('Distance', g_sco[point])
         # myp = arcpy.Point(point[0], point[1])
         # row.setValue('SHAPE@', myp)
         cursor.insertRow(row)
