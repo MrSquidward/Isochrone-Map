@@ -4,6 +4,8 @@ from model import *
 arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG'
 # arcpy.env.workspace = r'D:\pycharm\pag_arcpy'
 arcpy.env.overwriteOutput = True
+arcpy.CheckOutExtension('Spatial')
+arcpy.CheckOutExtension('3D')
 
 # roads_fc = arcpy.GetParameterAsText(0)
 # points_fc = arcpy.GetParameterAsText(1)
@@ -13,8 +15,11 @@ arcpy.env.overwriteOutput = True
 roads_fc = r'input\L4_1_BDOT10k__OT_SKJZ_L.shp'
 points_fc = r'input\range_point.shp'
 output_file = r'output\range.shp'
+projection = arcpy.Describe(roads_fc).spatialReference
 
 requested_time = 5
+
+create_output_shapefile(r'output\range.shp', projection)
 
 edges = []  # list of edges
 nodes_dict = {}  # dict of nodes
@@ -41,6 +46,6 @@ for row in arcpy.da.SearchCursor(points_fc, ["SHAPE@XY", "FID"]):
 start_point = torun_skjz.get_closest_node(points[0][0], points[0][1])
 edge_cost_fun = f_edge_cost_quickest()
 
-my_range = range_algorithm(torun_skjz, start_point, edge_cost_fun, requested_time)
-print my_range
-visualize_range(r"output\new.shp", my_range)
+my_range, mid_of_edges = range_algorithm(torun_skjz, start_point, edge_cost_fun, requested_time)
+
+visualize_range(r'output\range.shp', roads_fc, my_range, mid_of_edges)
