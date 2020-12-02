@@ -154,24 +154,42 @@ def range_algorithm(graph, start_id, edge_cost_function, end_time):
                 heapq.heappush(q_list, [g_score[next_node.id], next_node.id])
                 neighbours_map[next_node.id] = True
     new_score = {}
+    edges_range = []
     for p in g_score:
-        if g_score[p] < end_time:
+        if g_score[p] < 2 * end_time:
+            neighbour_edges = [el[1] for el in graph.get_neighbours(p)]
+            edges_range += neighbour_edges
             new_score[p] = g_score[p]
-    return new_score
+
+    edges_range = list(set(edges_range))
+    object_edges = {}
+    for e in edges_range:
+        st_time = g_score[graph.get_edge_by_id(e).from_node_id]
+        en_time = g_score[graph.get_edge_by_id(e).to_node_id]
+        object_edges[e] = (st_time + en_time) / 2
+
+    return new_score, object_edges
 
 
-def visualize_range(output_shp, g_sco):
+def visualize_range(output_shp, g_sco, mid_edges_shp, mids):
     points = []
+    mid_points = {}
+    for row in arcpy.da.SearchCursor(mid_edges_shp, ["SHAPE@", "FID"]):
+        if row[1] in mids:
+            e_id = row[1]
+            mid_time = mids[e_id]
+            mid_p = (row[0].positionAlongLine(0.50, True).firstPoint.X, row[0].positionAlongLine(0.50, True).firstPoint.Y)
+            g_sco[mid_p] = mid_time
 
-    cursor = arcpy.InsertCursor(output_shp, ['Id', 'SHAPE'])
+    cursor = arcpy.InsertCursor(output_shp, ['Id', 'SHAPE', 'Distance'])
     for point in g_sco:
         points.append(point)
-        print point
 
     for point in points:
         row = cursor.newRow()
         row.setValue('Id', points.index(point))
         row.setValue('SHAPE', arcpy.Point(point[0], point[1]))
+        row.setValue('Distance', g_sco[point])
         # myp = arcpy.Point(point[0], point[1])
         # row.setValue('SHAPE@', myp)
         cursor.insertRow(row)

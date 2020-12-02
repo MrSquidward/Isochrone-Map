@@ -41,9 +41,11 @@ for row in arcpy.da.SearchCursor(points_fc, ["SHAPE@XY", "FID"]):
 start_point = torun_skjz.get_closest_node(points[0][0], points[0][1])
 edge_cost_fun = f_edge_cost_quickest()
 
-my_range = range_algorithm(torun_skjz, start_point, edge_cost_fun, requested_time)
-print my_range
-visualize_range(r"output\new.shp", my_range)
+my_range, mid_of_edges = range_algorithm(torun_skjz, start_point, edge_cost_fun, requested_time)
+
+
+#print my_range
+visualize_range(r"output\new.shp", my_range, roads_fc, mid_of_edges)
 
 
 
