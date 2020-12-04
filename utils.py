@@ -174,7 +174,7 @@ def range_algorithm(graph, start_id, edge_cost_function, end_time):
     return nodes_in_range, edges_avg_time
 
 
-def visualize_range(output_shp, roads_shp, travel_time, edge_average_time):
+def visualize_range(tin, output_shp, roads_shp, travel_time, edge_average_time):
     points = []
     for row in arcpy.da.SearchCursor(roads_shp, ["SHAPE@", "FID"]):
         if row[1] in edge_average_time:
@@ -200,7 +200,7 @@ def visualize_range(output_shp, roads_shp, travel_time, edge_average_time):
 
     projection = arcpy.Describe(roads_shp).spatialReference
 
-    arcpy.CreateTin_3d(r'output\ranges', projection,
+    arcpy.CreateTin_3d(tin, projection,
                        'output\\range.shp Distance Mass_Points <None>',
                        'CONSTRAINED_DELAUNAY')  # visualisation via tin
 

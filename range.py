@@ -1,25 +1,24 @@
 from utils import *
 from model import *
 
-arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG'
-# arcpy.env.workspace = r'D:\pycharm\pag_arcpy'
+#arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG'
+arcpy.env.workspace = r'D:\pycharm\pag_arcpy'
 arcpy.env.overwriteOutput = True
 arcpy.CheckOutExtension('Spatial')
 arcpy.CheckOutExtension('3D')
 
-# roads_fc = arcpy.GetParameterAsText(0)
-# points_fc = arcpy.GetParameterAsText(1)
-# output_file = arcpy.GetParameterAsText(2)
-# shortest = arcpy.GetParameterAsText(3)
+roads_fc = arcpy.GetParameterAsText(0)
+points_fc = arcpy.GetParameterAsText(1)
+tin_file = arcpy.GetParameterAsText(2)
+requested_time = float(arcpy.GetParameterAsText(3))
 
-roads_fc = r'input\L4_1_BDOT10k__OT_SKJZ_L.shp'
-points_fc = r'input\range_point.shp'
+# roads_fc = r'input\L4_1_BDOT10k__OT_SKJZ_L.shp'
+# points_fc = r'input\range_point.shp'
 output_file = r'output\range.shp'
+
+# requested_time = 2.0
 projection = arcpy.Describe(roads_fc).spatialReference
-
-requested_time = 5
-
-create_output_shapefile(r'output\range.shp', projection)
+create_output_shapefile(output_file, projection)
 
 edges = []  # list of edges
 nodes_dict = {}  # dict of nodes
@@ -48,4 +47,4 @@ edge_cost_fun = f_edge_cost_quickest()
 
 my_range, mid_of_edges = range_algorithm(torun_skjz, start_point, edge_cost_fun, requested_time)
 
-visualize_range(r'output\range.shp', roads_fc, my_range, mid_of_edges)
+visualize_range(tin_file, output_file, roads_fc, my_range, mid_of_edges)
