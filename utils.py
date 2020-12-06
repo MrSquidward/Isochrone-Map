@@ -14,7 +14,7 @@ def f_edge_cost_shortest():
 
 
 def f_heuristic_quickest():
-    return lambda curr, end: sqrt((curr.x - end.x) * (curr.x - end.x) + (curr.y - end.y) * (curr.y - end.y)) /\
+    return lambda curr, end: sqrt((curr.x - end.x) * (curr.x - end.x) + (curr.y - end.y) * (curr.y - end.y)) / \
                              MAXIMUM_SPEED
 
 
@@ -43,7 +43,6 @@ def visualize_path(fid_path, input_shp, output_shp):
 def pathfinding_a_star(graph, start_id, end_id, edge_cost_function, heuristics_function):
     q_list = []  # not processed neighbours of previous nodes
     neighbours_map = {}  # map of not processed neighbours - used for quicker access to data
-
     f_score = {}  # value of a path from the start node to the current node with heuristics
     g_score = {}  # value of a path from the start node to the current node without heuristics
     p = {}  # previous node in a path
@@ -108,7 +107,7 @@ def pathfinding_a_star(graph, start_id, end_id, edge_cost_function, heuristics_f
         path.append(edge.id)
 
     print g_score[end_id]  # get the value of the shortest/quickest path
-
+    print my_counter
     return path
 
 

@@ -1,8 +1,6 @@
 from utils import *
 from model import *
 
-#arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG'
-arcpy.env.workspace = r'D:\pycharm\pag_arcpy'
 arcpy.env.overwriteOutput = True
 arcpy.CheckOutExtension('Spatial')
 arcpy.CheckOutExtension('3D')
