@@ -107,8 +107,6 @@ def pathfinding_a_star(graph, start_id, end_id, edge_cost_function, heuristics_f
 
         path.append(edge.id)
 
-    print g_score[end_id]  # get the value of the shortest/quickest path
-
     return path
 
 
@@ -201,14 +199,18 @@ def visualize_range(tin, output_shp, roads_shp, travel_time, edge_average_time):
     projection = arcpy.Describe(roads_shp).spatialReference
 
     arcpy.CreateTin_3d(tin, projection,
-                       'output\\range.shp Distance Mass_Points <None>',
+                       '{} Distance Mass_Points <None>'.format(output_shp),
                        'CONSTRAINED_DELAUNAY')  # visualisation via tin
 
 
-def create_output_shapefile(shp_name, proj):
-    arcpy.Delete_management(shp_name)
-    arcpy.CreateFeatureclass_management(arcpy.env.workspace, shp_name, 'POINT', '', '', '', proj)
-    arcpy.AddField_management(shp_name, 'Id', 'LONG')
-    arcpy.AddField_management(shp_name, 'Distance', 'FLOAT', 10, 10)
+def create_output_shapefile(path_to_shp, proj):
+    arcpy.Delete_management(path_to_shp)
 
-    return shp_name
+    path_to_shp_catalog = '\\'.join(path_to_shp.split('\\')[0:-1])
+    shp_name = path_to_shp.split('\\')[-1]
+
+    arcpy.CreateFeatureclass_management(path_to_shp_catalog, shp_name, 'POINT', '', '', '', proj)
+    arcpy.AddField_management(path_to_shp, 'Id', 'LONG')
+    arcpy.AddField_management(path_to_shp, 'Distance', 'FLOAT', 10, 10)
+
+    return path_to_shp
