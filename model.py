@@ -1,13 +1,12 @@
 import math
 from sys import maxsize
 
-
 SPEED_ARRAY = {
-    'G':  60 * 1000 / 60,
-    'Z':  50 * 1000 / 60,
-    'L':  45 * 1000 / 60,
-    'D':  50 * 1000 / 60,
-    'I':  50 * 1000 / 60,
+    'G': 60 * 1000 / 60,
+    'Z': 50 * 1000 / 60,
+    'L': 45 * 1000 / 60,
+    'D': 50 * 1000 / 60,
+    'I': 50 * 1000 / 60,
     'GP': 70 * 1000 / 60,
     'S': 120 * 1000 / 60,
     'A': 140 * 1000 / 60
@@ -44,7 +43,7 @@ class Edge:
 
     def get_length(self):
         return self.length
-    
+
     def get_time(self):
         return self.time
 
@@ -101,7 +100,7 @@ class Graph:
         id_of_min_dist = (-1, -1)
         for n in self.nodes:
             distance = math.sqrt((pt_x - n.x) * (pt_x - n.x) + (pt_y - n.y) * (pt_y - n.y))
-            if  distance < min_dist:
+            if distance < min_dist:
                 min_dist = distance
                 id_of_min_dist = n.id
 
