@@ -1,20 +1,13 @@
 from utils import *
 from model import *
 
-arcpy.env.workspace = r'C:\Users\user\Documents\Studia\PAG\PAG'
-# arcpy.env.workspace = r'D:\pycharm\pag_arcpy\bdot_skjz'
+
 arcpy.env.overwriteOutput = True
 
-# roads_fc = arcpy.GetParameterAsText(0)
-# points_fc = arcpy.GetParameterAsText(1)
-# output_file = arcpy.GetParameterAsText(2)
-# shortest = bool(arcpy.GetParameterAsText(3))
-
-roads_fc = r'input\L4_1_BDOT10k__OT_SKJZ_L.shp'
-points_fc = r'input\input_points.shp'
-output_file = r'output\path.shp'
-shortest = False
-
+roads_fc = arcpy.GetParameterAsText(0)
+points_fc = arcpy.GetParameterAsText(1)
+output_file = arcpy.GetParameterAsText(2)
+shortest = arcpy.GetParameterAsText(3)
 
 edges = []  # list of edges
 nodes_dict = {}  # dict of nodes
@@ -48,7 +41,6 @@ else:
     heur_fun = f_heuristic_quickest()
     edge_cost_fun = f_edge_cost_quickest()
 
-my_path = pathfinding_a_star(torun_skjz, start_point, end_point, edge_cost_fun, heur_fun)
-print my_path
+found_path = pathfinding_a_star(torun_skjz, start_point, end_point, edge_cost_fun, heur_fun)
 
-visualize_path(my_path, roads_fc, output_file)
+visualize_path(found_path, roads_fc, output_file)

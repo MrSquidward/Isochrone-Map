@@ -1,6 +1,7 @@
 from utils import *
 from model import *
 
+
 arcpy.env.overwriteOutput = True
 arcpy.CheckOutExtension('Spatial')
 arcpy.CheckOutExtension('3D')
@@ -8,15 +9,13 @@ arcpy.CheckOutExtension('3D')
 roads_fc = arcpy.GetParameterAsText(0)
 points_fc = arcpy.GetParameterAsText(1)
 tin_file = arcpy.GetParameterAsText(2)
-requested_time = float(arcpy.GetParameterAsText(3))
+requested_time = float(arcpy.GetParameterAsText(3).replace(',', '.'))
 
-# roads_fc = r'input\L4_1_BDOT10k__OT_SKJZ_L.shp'
-# points_fc = r'input\range_point.shp'
-output_file = r'output\range.shp'
+output_path = '\\'.join(tin_file.split('\\')[0:-1])
+points_output_file = output_path + r'\range_points.shp'
 
-# requested_time = 2.0
 projection = arcpy.Describe(roads_fc).spatialReference
-create_output_shapefile(output_file, projection)
+create_output_shapefile(points_output_file, projection)
 
 edges = []  # list of edges
 nodes_dict = {}  # dict of nodes
@@ -43,6 +42,6 @@ for row in arcpy.da.SearchCursor(points_fc, ["SHAPE@XY", "FID"]):
 start_point = torun_skjz.get_closest_node(points[0][0], points[0][1])
 edge_cost_fun = f_edge_cost_quickest()
 
-my_range, mid_of_edges = range_algorithm(torun_skjz, start_point, edge_cost_fun, requested_time)
+travel_range, mid_of_edges = range_algorithm(torun_skjz, start_point, edge_cost_fun, requested_time)
 
-visualize_range(tin_file, output_file, roads_fc, my_range, mid_of_edges)
+visualize_range(tin_file, points_output_file, roads_fc, travel_range, mid_of_edges)
