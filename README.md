@@ -39,3 +39,8 @@ It is based on the Dijkstra algorithm and is using our own graph model (model.py
 * You have to run files on a Python 2.7 with arcpy module installed.
 * You have to install heapq module
 * To visualize and check results we used an ArcMap but you can also use QGIS instead.
+
+#Authors
+* Michał Nguyen
+* Antoni Gołoś
+Students from Warsaw University of Technology
