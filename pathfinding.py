@@ -1,5 +1,4 @@
 from arcpy_integration import *
-from model import *
 from algorithms import *
 
 
@@ -29,5 +28,4 @@ else:
     edge_cost_func = edge_cost_quickest()
 
 found_path = pathfinding_a_star(graph, start_point, end_point, edge_cost_func, heuristic_func)
-
 visualize_path(found_path, roads_shp, output_shp)

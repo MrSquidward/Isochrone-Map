@@ -68,13 +68,11 @@ def visualize_range(tin, output_shp, roads_shp, travel_time, edge_average_time):
                        'CONSTRAINED_DELAUNAY')  # visualisation via tin
 
 
-def create_output_shapefile(path_to_shp, proj):
+def create_output_shapefile(path_to_directory, shp_name, proj):
+    path_to_shp = path_to_directory + '\\' + shp_name
     arcpy.Delete_management(path_to_shp)
 
-    path_to_shp_catalog = '\\'.join(path_to_shp.split('\\')[0:-1])
-    shp_name = path_to_shp.split('\\')[-1]
-
-    arcpy.CreateFeatureclass_management(path_to_shp_catalog, shp_name, 'POINT', '', '', '', proj)
+    arcpy.CreateFeatureclass_management(path_to_directory, shp_name, 'POINT', '', '', '', proj)
     arcpy.AddField_management(path_to_shp, 'Id', 'LONG')
     arcpy.AddField_management(path_to_shp, 'Distance', 'FLOAT', 10, 10)
 
