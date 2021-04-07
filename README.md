@@ -41,6 +41,6 @@ It is based on the Dijkstra algorithm and is using our own graph model (model.py
 * To visualize and check results we used an ArcMap but you can also use QGIS instead.
 
 ## Authors
+Students from Warsaw University of Technology:
 * Michał Nguyen
-* Antoni Gołoś
-Students from Warsaw University of Technology
+* Antoni Gołoś 
